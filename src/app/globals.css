@@ -1,0 +1,194 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Design concept: «Свет и аккуратность».
+   Clean window-frame geometry, air, a strict grid, lots of light. Warm light
+   background, graphite text, one cool "glass" accent and exactly one
+   contrasting CTA colour.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-bg: #fbf9f6;
+  --color-surface: #ffffff;
+  --color-surface-2: #f3efe9;
+  --color-ink: #1f2328;
+  --color-ink-soft: #4b545e;
+  --color-muted: #6b7280;
+  --color-line: #e4ded6;
+  --color-graphite: #23282d;
+  --color-glass: #2e6f8e;
+  --color-glass-soft: #e6f0f4;
+  --color-cta: #d9551b;
+  --color-cta-hover: #bd4513;
+  --color-success: #1f7a4d;
+  --color-danger: #b42318;
+  --color-warn: #b54708;
+
+  --font-sans: 'Manrope', 'Onest', 'Golos Text', ui-sans-serif, system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  --radius-card: 14px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    /* Room for the fixed mobile action bar. */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-glass);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Kazakh glyphs are checked for the chosen fonts (ә, і, ң, ғ, ү, ұ, қ, ө, һ). */
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 1120px;
+    margin-inline: auto;
+    padding-inline: 16px;
+  }
+
+  /* Touch targets are never smaller than 44 px (§10). */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding-inline: 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-align: center;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .btn-cta {
+    background-color: var(--color-cta);
+    color: #fff;
+  }
+
+  .btn-cta:hover {
+    background-color: var(--color-cta-hover);
+  }
+
+  .btn-outline {
+    border: 1.5px solid var(--color-line);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--color-glass);
+    color: var(--color-glass);
+  }
+
+  .btn-wa {
+    background-color: #1f8f4e;
+    color: #fff;
+  }
+
+  .btn-wa:hover {
+    background-color: #17713e;
+  }
+
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    padding: 20px;
+  }
+
+  .field {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--color-line);
+    border-radius: 10px;
+    background-color: var(--color-surface);
+    /* 16 px prevents the mobile Safari zoom-on-focus bug. */
+    font-size: 16px;
+  }
+
+  .field:focus {
+    border-color: var(--color-glass);
+    outline: none;
+  }
+
+  .label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+  }
+
+  .hint {
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+
+  .section {
+    padding-block: 40px;
+  }
+
+  @media (min-width: 768px) {
+    .section {
+      padding-block: 64px;
+    }
+  }
+
+  /* Restrained "opening sash" animation for the hero. */
+  .sash {
+    transform-origin: left center;
+    animation: sash-open 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+
+  @keyframes sash-open {
+    from {
+      transform: perspective(900px) rotateY(-28deg);
+      opacity: 0.35;
+    }
+    to {
+      transform: perspective(900px) rotateY(0deg);
+      opacity: 1;
+    }
+  }
+}
