@@ -116,7 +116,7 @@ function HeroBackdrop() {
       <svg
         viewBox="0 0 900 620"
         preserveAspectRatio="xMaxYMid slice"
-        className="absolute -right-[8%] -bottom-[6%] h-[112%] w-[92%] text-white/12 sm:w-[70%] lg:w-[56%]"
+        className="absolute -right-[6%] -bottom-[8%] h-[108%] w-[86%] text-white/10 [mask-image:linear-gradient(to_right,transparent_0%,black_46%)] sm:w-[64%] lg:w-[52%]"
       >
         <g fill="none" stroke="currentColor" strokeWidth="1.6">
           {/* facade elevation: three bays, bleeding off the right edge */}

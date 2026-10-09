@@ -30,6 +30,13 @@ export function CookieConsent() {
     setVisible(false);
   };
 
+  // Both the banner and the mobile action bar are fixed to the bottom edge, so
+  // they would stack on top of each other. The banner broadcasts its state and
+  // the bar stays out of the way while it is open.
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('bp:cookie-banner', { detail: visible }));
+  }, [visible]);
+
   if (!visible) return null;
 
   return (

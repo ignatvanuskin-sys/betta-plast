@@ -14,8 +14,11 @@ storage/
 .env.local
 .env.*.local
 
-# Design-reference captures kept locally for visual comparison (large PNGs)
+# Design-reference and layout-check captures, kept locally (large PNGs)
 reference-*.png
+check-*.png
+ours-*.png
+ref-*.png
 
 # Tooling
 *.tsbuildinfo

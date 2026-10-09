@@ -21,11 +21,20 @@ export function MobileActionBar({ waHref }: { waHref: string }) {
      from sitting on top of the first screen's content. */
   const [scrolledPast, setScrolledPast] = useState(false);
 
+  const [bannerOpen, setBannerOpen] = useState(false);
+
   useEffect(() => {
     const onScroll = () => setScrolledPast(window.scrollY > window.innerHeight * 0.72);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Yield to the cookie banner — otherwise both fixed bars occupy the same strip.
+  useEffect(() => {
+    const onBanner = (event: Event) => setBannerOpen(Boolean((event as CustomEvent<boolean>).detail));
+    window.addEventListener('bp:cookie-banner', onBanner);
+    return () => window.removeEventListener('bp:cookie-banner', onBanner);
   }, []);
 
   useEffect(() => {
@@ -48,7 +57,7 @@ export function MobileActionBar({ waHref }: { waHref: string }) {
     };
   }, []);
 
-  if (hidden || !scrolledPast) return null;
+  if (hidden || !scrolledPast || bannerOpen) return null;
 
   return (
     <div
