@@ -7,7 +7,7 @@
  * service. Both speak the same SQL dialect and share the same migrations, so
  * switching is a one-variable change and there is no vendor lock-in in the data.
  */
-import { existsSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
 import { PGlite } from '@electric-sql/pglite';
 import { drizzle as drizzleNodePg, type NodePgDatabase } from 'drizzle-orm/node-postgres';
@@ -39,11 +39,19 @@ function hasMigrations(): boolean {
 
 async function createDb(): Promise<AppDb> {
   if (database.usesPglite) {
-    const client = new PGlite(database.pgliteDir);
+    // PGlite does not create parent directories itself.
+    const dir = path.resolve(process.cwd(), database.pgliteDir);
+    mkdirSync(dir, { recursive: true });
+
+    const client = new PGlite(dir);
     await client.waitReady;
     const db = drizzlePglite(client, { schema }) as unknown as AppDb;
     if (hasMigrations()) {
       await migratePglite(db as never, { migrationsFolder });
+    } else {
+      console.warn(
+        '[db] каталог drizzle/ с миграциями не найден — таблицы не созданы. Запустите npm run db:generate.',
+      );
     }
     return db;
   }
@@ -78,6 +86,22 @@ export function getDb(): Promise<AppDb> {
       });
   }
   return globalRef.__bettaPlastDbReady;
+}
+
+/**
+ * Read-path variant of `getDb()` that never throws.
+ *
+ * Public pages must degrade (hide optional blocks) instead of returning a 500,
+ * and the production build must not require a reachable database. Callers
+ * receive `null` and fall back to their documented default.
+ */
+export async function tryGetDb(): Promise<AppDb | null> {
+  try {
+    return await getDb();
+  } catch (error) {
+    console.error('[db] недоступна — страница отрендерена без данных:', error instanceof Error ? error.message : error);
+    return null;
+  }
 }
 
 export { schema };

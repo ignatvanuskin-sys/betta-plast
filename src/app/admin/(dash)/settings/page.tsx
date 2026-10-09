@@ -1,8 +1,8 @@
 import { changePasswordAction, saveRatingAction, saveReviewDelayAction } from '../../actions';
 import { ActionForm } from '@/components/admin/ActionForm';
 import { getCurrentUser } from '@/lib/auth/session';
-import { configurationWarnings, contacts, flags, site, storage } from '@/lib/config';
-import { getSetting, getRating, SETTING_KEYS } from '@/lib/domain/settings';
+import { configurationWarnings, contacts, flags, site } from '@/lib/config';
+import { getSetting, getRating } from '@/lib/domain/settings';
 import { storageDriverName } from '@/lib/storage';
 
 export const dynamic = 'force-dynamic';

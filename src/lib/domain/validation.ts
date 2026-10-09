@@ -10,6 +10,7 @@ import { LOST_REASONS } from './statuses';
 export const CONSENT_VERSION = '2026-10-01';
 
 export const LEAD_KINDS = ['window', 'balcony', 'partition', 'repair', 'other'] as const;
+export type LeadKind = (typeof LEAD_KINDS)[number];
 export const FORM_KINDS = ['quick', 'calculator', 'measure', 'repair', 'b2b', 'callback'] as const;
 export const SEGMENTS = ['b2c', 'b2b'] as const;
 export const PREFERRED_CONTACT = ['call', 'whatsapp', 'any'] as const;

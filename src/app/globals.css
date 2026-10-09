@@ -23,7 +23,9 @@
   --color-danger: #b42318;
   --color-warn: #b54708;
 
-  --font-sans: 'Manrope', 'Onest', 'Golos Text', ui-sans-serif, system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+  /* Self-hosted via next/font (see app/layout.tsx); the stack is the fallback. */
+  --font-sans: var(--font-manrope), 'Manrope', 'Onest', 'Golos Text', ui-sans-serif, system-ui, 'Segoe UI', Roboto,
+    Arial, sans-serif;
 
   --radius-card: 14px;
 }

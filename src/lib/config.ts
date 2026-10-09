@@ -39,8 +39,12 @@ export const database = {
   get usesPglite(): boolean {
     return this.url === '' || this.url.startsWith('pglite:');
   },
-  /** Filesystem location of the embedded database when DATABASE_URL is absent. */
-  pgliteDir: str('PGLITE_DIR', '.data/pglite'),
+  /**
+   * Filesystem location of the embedded database when DATABASE_URL is absent.
+   * Serverless platforms only allow writes under /tmp, so that path is used
+   * automatically there — otherwise PGlite would crash on a read-only FS.
+   */
+  pgliteDir: str('PGLITE_DIR', process.env.VERCEL ? '/tmp/pglite' : '.data/pglite'),
 };
 
 export const site = {
@@ -147,7 +151,9 @@ export const storage = {
   s3Bucket: str('S3_BUCKET'),
   s3KeyId: str('S3_ACCESS_KEY_ID'),
   s3Secret: str('S3_SECRET_ACCESS_KEY'),
-  localDir: str('LOCAL_STORAGE_DIR', 'storage'),
+  // Serverless filesystems are read-only except /tmp, and /tmp is ephemeral —
+  // fine for a preview, but production uploads need a real bucket.
+  localDir: str('LOCAL_STORAGE_DIR', process.env.VERCEL ? '/tmp/storage' : 'storage'),
   get remoteEnabled(): boolean {
     return this.s3Endpoint !== '' && this.s3Bucket !== '';
   },

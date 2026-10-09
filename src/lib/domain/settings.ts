@@ -4,7 +4,7 @@
  */
 import { eq } from 'drizzle-orm';
 
-import { getDb } from '../db/client';
+import { getDb, tryGetDb } from '../db/client';
 import { settings } from '../db/schema';
 
 export type RatingSetting = {
@@ -31,7 +31,8 @@ export const DEFAULT_RATING: RatingSetting = {
 };
 
 export async function getSetting<T>(key: string, fallback: T): Promise<T> {
-  const db = await getDb();
+  const db = await tryGetDb();
+  if (!db) return fallback;
   const rows = await db.select().from(settings).where(eq(settings.key, key)).limit(1);
   const row = rows[0];
   if (!row) return fallback;

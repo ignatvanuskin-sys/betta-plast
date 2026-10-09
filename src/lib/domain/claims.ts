@@ -7,7 +7,7 @@
  */
 import { eq } from 'drizzle-orm';
 
-import { getDb } from '../db/client';
+import { getDb, tryGetDb } from '../db/client';
 import { claims, type Claim } from '../db/schema';
 import type { ClaimKey } from './claims-seed';
 
@@ -27,14 +27,16 @@ export function isConfirmed(claim: Claim | undefined | null): boolean {
 
 /** Loads the whole registry keyed by claim key. */
 export async function getClaimsMap(): Promise<Map<string, Claim>> {
-  const db = await getDb();
+  const db = await tryGetDb();
+  if (!db) return new Map();
   const rows = await db.select().from(claims);
   return new Map(rows.map((row) => [row.key, row]));
 }
 
 /** Only confirmed claims, for public rendering. */
 export async function getPublicClaims(): Promise<PublicClaim[]> {
-  const db = await getDb();
+  const db = await tryGetDb();
+  if (!db) return [];
   const rows = await db.select().from(claims).where(eq(claims.status, 'confirmed'));
   return rows
     .filter((row) => row.textRu.trim() !== '')
@@ -42,7 +44,8 @@ export async function getPublicClaims(): Promise<PublicClaim[]> {
 }
 
 export async function getClaim(key: ClaimKey | string): Promise<Claim | undefined> {
-  const db = await getDb();
+  const db = await tryGetDb();
+  if (!db) return undefined;
   const rows = await db.select().from(claims).where(eq(claims.key, key)).limit(1);
   return rows[0];
 }
@@ -53,7 +56,7 @@ export async function getClaim(key: ClaimKey | string): Promise<Claim | undefine
  */
 export async function confirmedText(key: ClaimKey | string): Promise<string | null> {
   const claim = await getClaim(key);
-  return isConfirmed(claim) ? claim.textRu : null;
+  return claim && isConfirmed(claim) ? claim.textRu : null;
 }
 
 export async function setClaimStatus(

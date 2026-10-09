@@ -5,7 +5,7 @@
  */
 import { and, asc, eq } from 'drizzle-orm';
 
-import { getDb } from '../db/client';
+import { tryGetDb } from '../db/client';
 import { galleryItems, reviewsCurated } from '../db/schema';
 
 export type GalleryEntry = {
@@ -19,7 +19,8 @@ export type GalleryEntry = {
 };
 
 export async function getGallery(options: { onlyHome?: boolean; limit?: number } = {}): Promise<GalleryEntry[]> {
-  const db = await getDb();
+  const db = await tryGetDb();
+  if (!db) return [];
   const conditions = [eq(galleryItems.active, true)];
   if (options.onlyHome) conditions.push(eq(galleryItems.showOnHome, true));
 
@@ -53,7 +54,8 @@ export type CuratedReview = {
  * review author's consent is recorded (§7.6).
  */
 export async function getApprovedReviewQuotes(): Promise<CuratedReview[]> {
-  const db = await getDb();
+  const db = await tryGetDb();
+  if (!db) return [];
   const rows = await db
     .select()
     .from(reviewsCurated)

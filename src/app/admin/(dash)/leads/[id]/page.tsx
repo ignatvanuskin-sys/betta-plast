@@ -6,7 +6,7 @@ import {
   bookMeasurementAction,
   deleteLeadAction,
   updateLeadStatusAction,
-} from '../../actions';
+} from '../../../actions';
 import { ActionForm } from '@/components/admin/ActionForm';
 import { getCurrentUser, hasRole } from '@/lib/auth/session';
 import { describeCalc } from '@/lib/domain/catalog';

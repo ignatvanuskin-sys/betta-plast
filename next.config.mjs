@@ -10,6 +10,14 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   serverExternalPackages: ['@electric-sql/pglite', 'pg'],
+  /**
+   * The SQL migrations are read from disk at runtime by the Drizzle migrator.
+   * They are not imported by any module, so the bundler would otherwise drop
+   * them from the serverless output and migrations would silently find nothing.
+   */
+  outputFileTracingIncludes: {
+    '/**': ['./drizzle/**'],
+  },
   experimental: {
     // Uploaded design files (drawings/specs) are posted through route handlers.
     serverActions: {
@@ -22,6 +30,7 @@ const nextConfig = {
       // Next.js injects inline bootstrap scripts; analytics scripts are loaded
       // only after cookie consent (see components/CookieConsent.tsx).
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://www.googletagmanager.com https://connect.facebook.net",
+      // Fonts are self-hosted by next/font — no external font origin needed.
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",

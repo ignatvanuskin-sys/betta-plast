@@ -3,7 +3,7 @@
  * server exactly as stored — no vendor lock-in, the owner can always take their
  * customer list with them.
  */
-import { NextResponse, type NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import { getCurrentUser, hasRole } from '@/lib/auth/session';
 import { listLeads } from '@/lib/domain/leads';
@@ -37,7 +37,7 @@ function escapeCsv(value: unknown): string {
   return /[",;]/.test(text) ? `"${text}"` : text;
 }
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   const user = await getCurrentUser();
   if (!user || !hasRole(user, 'manager')) {
     return NextResponse.json({ ok: false, message: 'Unauthorized' }, { status: 401 });
