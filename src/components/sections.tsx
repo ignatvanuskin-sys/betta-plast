@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
@@ -6,6 +7,7 @@ import { IconCheck, IconClock, IconPhone, IconPin, IconStar, SERVICE_ICONS } fro
 import { TrackedLink } from './TrackedLink';
 import { LeadForm } from './LeadForm';
 import { company, contacts, defaultWorkingHours } from '@/lib/config';
+import { HERO_PHOTO } from '@/lib/photos';
 import { ratingLine, type RatingSetting } from '@/lib/domain/settings';
 
 /* -------------------------------------------------------------------------- */
@@ -106,13 +108,35 @@ export function Hero({
   );
 }
 
-/** Drawn architectural backdrop for the hero (see the note above). */
+/**
+ * Hero backdrop: a licensed glass-facade photograph under a heavy dark-green
+ * gradient. The gradient is what keeps the headline readable over a bright
+ * photo, and it reproduces the reference's dark, moody hero.
+ *
+ * When no licensed photo is configured the drawn facade below is used instead,
+ * so the hero never ends up as a flat empty panel.
+ */
 function HeroBackdrop() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+      {HERO_PHOTO ? (
+        <>
+          <Image
+            src={HERO_PHOTO.file}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(11,26,22,0.95)_0%,rgba(11,26,22,0.82)_46%,rgba(11,26,22,0.58)_100%)]" />
+        </>
+      ) : null}
+
       <div className="absolute -bottom-40 -left-40 h-[520px] w-[520px] rounded-full bg-gold/20 blur-3xl" />
       <div className="absolute -right-24 -top-24 h-[420px] w-[420px] rounded-full bg-primary-hover/40 blur-3xl" />
 
+      {HERO_PHOTO ? null : (
       <svg
         viewBox="0 0 900 620"
         preserveAspectRatio="xMaxYMid slice"
@@ -131,6 +155,7 @@ function HeroBackdrop() {
           <path d="M-40 116h980M-40 316h980M-40 516h980" strokeWidth="1" opacity="0.4" />
         </g>
       </svg>
+      )}
     </div>
   );
 }

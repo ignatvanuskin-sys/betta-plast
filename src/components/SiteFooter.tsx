@@ -4,6 +4,7 @@ import { IconClock, IconMail, IconPhone, IconPin } from './icons';
 import { TrackedLink } from './TrackedLink';
 import { company, contacts, defaultWorkingHours, flags } from '@/lib/config';
 import { ratingLine, getRating } from '@/lib/domain/settings';
+import { PHOTO_CREDITS } from '@/lib/photos';
 
 export type FooterLink = { href: string; label: string };
 
@@ -123,6 +124,26 @@ export async function SiteFooter({ pages, legalEntity }: { pages: FooterLink[]; 
             {flags.priceDisplay === 'off' ? '' : ' либо ориентировочно после замера'}.
           </p>
           {legalEntity ? <p>{legalEntity}</p> : null}
+        </div>
+        {/* Attribution for licensed illustration photography. */}
+        <div className="container-page pb-6 text-xs text-primary-fg/45">
+          <p>
+            {PHOTO_CREDITS.map((photo, index) => (
+              <span key={photo.file}>
+                {index > 0 ? ' · ' : ''}
+                Фото: {photo.creator},{' '}
+                <a
+                  href={photo.source}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  className="underline transition-colors hover:text-gold-light"
+                >
+                  {photo.licence}
+                </a>
+              </span>
+            ))}
+            {PHOTO_CREDITS.length > 0 ? ' — иллюстрации, а не фотографии наших работ.' : null}
+          </p>
         </div>
       </div>
     </footer>
