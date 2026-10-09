@@ -165,3 +165,32 @@ export function publishedPages(confirmed: Set<string>): PageDefinition[] {
 export function navPages(confirmed: Set<string>): PageDefinition[] {
   return publishedPages(confirmed).filter((page) => !page.footerOnly);
 }
+
+/**
+ * Curated header navigation — six items on one line, like the reference.
+ *
+ * Everything else (13 routes in total) is reachable from the mobile sheet, the
+ * footer and the in-page links. Putting the full list in the header made the
+ * items wrap onto three lines and clip at 1440px.
+ */
+export const PRIMARY_NAV_KEYS: PageKey[] = ['okna', 'balkony', 'raboty', 'raschet', 'otzyvy', 'kontakty'];
+
+/**
+ * Terse labels for the header only — the long descriptive names stay in the
+ * footer and the mobile sheet, where there is room for them.
+ */
+const SHORT_NAV_LABELS: Partial<Record<PageKey, string>> = {
+  okna: 'Окна',
+  balkony: 'Балконы',
+  raboty: 'Работы',
+  raschet: 'Расчёт',
+  otzyvy: 'Отзывы',
+  kontakty: 'Контакты',
+};
+
+export function primaryNavPages(confirmed: Set<string>): PageDefinition[] {
+  const published = publishedPages(confirmed);
+  return PRIMARY_NAV_KEYS.map((key) => published.find((page) => page.key === key))
+    .filter((page): page is PageDefinition => Boolean(page))
+    .map((page) => ({ ...page, navLabel: SHORT_NAV_LABELS[page.key] ?? page.navLabel }));
+}

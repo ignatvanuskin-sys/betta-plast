@@ -14,9 +14,9 @@ import {
   SectionHeading,
   ServiceTiles,
   Steps,
-  TrustRow,
   WhyUs,
 } from '@/components/sections';
+import { ART_BY_KIND } from '@/components/art';
 import { FAQ_ITEMS } from '@/lib/content/faq';
 import { getGallery, REVIEW_THEMES } from '@/lib/domain/content';
 import { getRating, ratingLine } from '@/lib/domain/settings';
@@ -37,19 +37,33 @@ const SERVICES = [
     title: 'Окна по размеру',
     text: 'Пластиковые окна для квартир и частных домов: замер, изготовление, монтаж, откосы.',
     icon: 'window' as const,
+    badge: 'Квартиры и дома',
+    art: 'window' as const,
   },
   {
     href: '/balkony',
     title: 'Балконы и лоджии',
     text: 'Остекление, утепление, обшивка, откосы и встроенный шкаф — под ключ.',
     icon: 'balcony' as const,
+    badge: 'Самый частый заказ',
+    art: 'balcony' as const,
   },
   {
     href: '/peregorodki',
     title: 'Перегородки и витрины',
     text: 'Для бутиков, магазинов и офисов. Эскиз по вашему размеру и монтаж.',
     icon: 'partition' as const,
+    badge: 'Коммерческие объекты',
+    art: 'partition' as const,
   },
+];
+
+/** Extra illustrated tiles that give the page visual weight without photos. */
+const CONSTRUCTIONS = [
+  { kind: 'window' as const, title: 'Окна', text: 'Глухие, поворотные, поворотно-откидные. Любые размеры проёма.' },
+  { kind: 'balcony' as const, title: 'Балконы и лоджии', text: 'Остекление в пол, вынос по ширине, откосы и отливы.' },
+  { kind: 'partition' as const, title: 'Перегородки', text: 'Стекло, матовые вставки, двери и доборы под потолок.' },
+  { kind: 'repair' as const, title: 'Ремонт и регулировка', text: 'Провисшие створки, продувание, замена уплотнителя и фурнитуры.' },
 ];
 
 const AUDIENCE = [
@@ -129,7 +143,6 @@ export default async function HomePage() {
         primary={{ href: '/raschet', label: 'Запросить расчёт' }}
         trust={<HeroTrust rating={rating} />}
       />
-      <TrustRow rating={rating} />
 
       <ServiceTiles
         tiles={SERVICES}
@@ -137,6 +150,40 @@ export default async function HomePage() {
         title="Три направления, с которых чаще всего начинают"
         lead="Опишите объект — подскажем решение и посчитаем после замера."
       />
+
+      {/* Illustrated grid — carries the visual weight the reference gets from
+          photography, drawn rather than borrowed. */}
+      <section className="section-sm bg-cream" id="konstrukcii">
+        <div className="container-page">
+          <SectionHeading
+            eyebrow="Что можно заказать"
+            title="Конструкции под ваш размер"
+            size="sm"
+            lead="Покажем схему и обсудим детали на замере. Точные размеры снимаются по месту."
+          />
+          <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {CONSTRUCTIONS.map((item, index) => {
+              const Art = ART_BY_KIND[item.kind];
+              return (
+                <div
+                  key={item.title}
+                  className="card overflow-hidden !p-0"
+                  data-reveal
+                  data-reveal-delay={index * 70}
+                >
+                  <span className="block bg-primary-soft px-3 pt-3 text-primary">
+                    <Art className="h-[110px] w-full sm:h-[150px]" title={item.title} />
+                  </span>
+                  <span className="block p-4">
+                    <span className="block font-semibold leading-snug text-primary">{item.title}</span>
+                    <span className="mt-1.5 block text-[13px] leading-relaxed text-ink-soft">{item.text}</span>
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
       <AudienceCards cards={AUDIENCE} />
 

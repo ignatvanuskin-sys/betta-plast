@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
+import { ART_BY_KIND, type ArtKind } from './art';
 import { IconCheck, IconClock, IconPhone, IconPin, IconStar, SERVICE_ICONS } from './icons';
 import { TrackedLink } from './TrackedLink';
 import { LeadForm } from './LeadForm';
@@ -66,26 +67,26 @@ export function Hero({
 }) {
   return (
     <section className="on-dark relative overflow-hidden bg-ink-deep text-white">
-      {/* Reference uses a full-bleed photo. Betta Plast has no licensed imagery yet,
-          so the same composition is built from the window-frame geometry (§10). */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.13]">
-        <div className="absolute -right-24 top-1/2 hidden h-[560px] w-[420px] -translate-y-1/2 rounded-2xl border-2 border-white lg:block">
-          <div className="absolute inset-x-0 top-1/3 h-px bg-white" />
-          <div className="absolute inset-y-0 left-1/2 w-px bg-white" />
-        </div>
-        <div className="absolute -bottom-40 -left-32 h-[420px] w-[420px] rounded-full bg-gold/25 blur-3xl" />
-      </div>
+      {/* The reference fills this with a full-bleed photo. Until licensed
+          photography exists, the same composition is drawn as an architectural
+          elevation that bleeds off the right and bottom edges — deliberately
+          reading as an illustration, never as a missing image. */}
+      <HeroBackdrop />
 
-      <div className={`container-page relative ${compact ? 'py-20 lg:py-28' : 'py-24 lg:py-36'}`}>
-        <span className="eyebrow eyebrow-on-dark">{eyebrow}</span>
-        <h1 className="display-1 mt-5 max-w-4xl text-white">{h1}</h1>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">{subtitle}</p>
+      <div className={`container-page relative ${compact ? 'py-16 lg:py-24' : 'py-16 lg:py-28'}`}>
+        <span className="inline-flex items-center rounded-full border border-white/30 px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-gold-light">
+          {eyebrow}
+        </span>
+        <h1 className="display-1 mt-6 max-w-3xl text-white">{h1}</h1>
+        <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/85 lg:text-lg">{subtitle}</p>
 
-        <div className="mt-9 flex flex-wrap items-center gap-3">
+        <div className="mt-8 flex flex-wrap items-center gap-3">
           <Link href={primary.href} className="btn btn-gold btn-sheen">
             {primary.label}
+            <span aria-hidden="true" className="text-base leading-none">
+              &#8599;
+            </span>
           </Link>
-          {secondary}
           <TrackedLink
             href={contacts.telHref}
             event="call_click"
@@ -94,46 +95,88 @@ export function Hero({
             ariaLabel={`Позвонить ${contacts.phonePrimary}`}
           >
             <IconPhone size={16} />
-            {contacts.phonePrimary}
+            Позвонить
           </TrackedLink>
+          {secondary}
         </div>
 
-        {trust ? <div className="mt-10">{trust}</div> : null}
+        {trust ? <div className="mt-9">{trust}</div> : null}
       </div>
     </section>
+  );
+}
+
+/** Drawn architectural backdrop for the hero (see the note above). */
+function HeroBackdrop() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="absolute -bottom-40 -left-40 h-[520px] w-[520px] rounded-full bg-gold/20 blur-3xl" />
+      <div className="absolute -right-24 -top-24 h-[420px] w-[420px] rounded-full bg-primary-hover/40 blur-3xl" />
+
+      <svg
+        viewBox="0 0 900 620"
+        preserveAspectRatio="xMaxYMid slice"
+        className="absolute -right-[8%] -bottom-[6%] h-[112%] w-[92%] text-white/12 sm:w-[70%] lg:w-[56%]"
+      >
+        <g fill="none" stroke="currentColor" strokeWidth="1.6">
+          {/* facade elevation: three bays, bleeding off the right edge */}
+          <path d="M40 -20v680M300 -20v680M560 -20v680M820 -20v680" strokeWidth="2.4" />
+          <path d="M-40 120h980M-40 320h980M-40 520h980" strokeWidth="2.4" />
+          <path d="M40 120h260M300 120h260M560 120h260" opacity="0.55" />
+          <path d="M40 320h260M300 320h260M560 320h260" opacity="0.55" />
+          {/* glazing highlights */}
+          <path d="M78 158h-38M338 158h-38M598 158h-38" strokeWidth="6" opacity="0.35" />
+          <path d="M118 358h-78M378 358h-78M638 358h-78" strokeWidth="6" opacity="0.25" />
+          {/* floor slabs */}
+          <path d="M-40 116h980M-40 316h980M-40 516h980" strokeWidth="1" opacity="0.4" />
+        </g>
+      </svg>
+    </div>
   );
 }
 
 /** Hero trust row: the 2GIS rating as sourced data plus existence-only facts. */
 export function HeroTrust({ rating }: { rating: RatingSetting }) {
   const stats = [
-    { value: rating.value.toFixed(1).replace('.', ','), label: 'в 2ГИС' },
-    { value: String(rating.reviewsCount), label: 'отзывов' },
-    { value: String(rating.ratingsCount), label: 'оценок' },
+    `${rating.value.toFixed(1).replace('.', ',')} в 2ГИС`,
+    `${rating.reviewsCount} отзывов`,
+    `${rating.ratingsCount} оценок`,
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-      <div className="flex items-center gap-5">
-        {stats.map((stat) => (
-          <span key={stat.label} className="flex items-baseline gap-1.5">
-            <span className="text-2xl font-semibold text-white">{stat.value}</span>
-            <span className="text-sm text-white/65">{stat.label}</span>
-          </span>
-        ))}
+    <div className="space-y-3.5">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <p className="flex flex-wrap items-center gap-x-2 whitespace-nowrap text-[15px] font-medium text-white/90">
+          {stats.map((stat, index) => (
+            <span key={stat} className="flex items-center gap-2">
+              {index > 0 ? <span className="text-white/35">·</span> : null}
+              {stat}
+            </span>
+          ))}
+        </p>
+        <a
+          href={contacts.gisReviewsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="whitespace-nowrap border-b border-white/45 pb-0.5 text-[15px] font-semibold text-white transition-colors hover:border-gold-light hover:text-gold-light"
+        >
+          Смотреть отзывы
+        </a>
       </div>
-      <a
-        href={contacts.gisReviewsUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="border-b border-white/40 pb-0.5 text-sm font-medium text-white/90 transition-colors hover:border-gold-light hover:text-gold-light"
-      >
-        Смотреть отзывы
-      </a>
-      <span className="flex items-center gap-2 text-sm text-white/65">
-        <IconPin size={15} />
-        {company.cityRu}, {company.addressRu}
-      </span>
+
+      {/* Second row, exactly as in the reference: primary proof link + address. */}
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[15px]">
+        <Link
+          href="/raboty"
+          className="whitespace-nowrap border-b border-white/45 pb-0.5 font-semibold text-white transition-colors hover:border-gold-light hover:text-gold-light"
+        >
+          Смотреть работы
+        </Link>
+        <span className="flex items-center gap-2 whitespace-nowrap text-white/70">
+          <IconPin size={15} />
+          {company.cityRu}, {company.addressRu}
+        </span>
+      </div>
     </div>
   );
 }
@@ -186,6 +229,10 @@ export type ServiceTile = {
   title: string;
   text: string;
   icon: keyof typeof SERVICE_ICONS;
+  /** Short uppercase label above the title, e.g. «Окна и остекление». */
+  badge?: string;
+  /** Which drawn elevation to use as the card's image slot. */
+  art?: ArtKind;
 };
 
 export function ServiceTiles({
@@ -206,22 +253,31 @@ export function ServiceTiles({
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {tiles.map((tile, index) => {
             const Icon = SERVICE_ICONS[tile.icon];
+            const Art = ART_BY_KIND[tile.art ?? 'window'];
             return (
               <Link
                 key={tile.href}
                 href={tile.href}
                 data-reveal
                 data-reveal-delay={index * 70}
-                className="card group flex flex-col transition-colors hover:border-primary/35"
+                className="card group flex flex-col overflow-hidden !p-0 transition-colors hover:border-primary/35"
               >
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                  <Icon size={21} />
+                <span className="block bg-primary-soft px-4 pt-4 text-primary">
+                  <Art className="h-[150px] w-full" />
                 </span>
-                <h3 className="card-title mt-4">{tile.title}</h3>
+                <span className="flex flex-1 flex-col p-5">
+                <span className="inline-flex items-center gap-2 text-primary">
+                  <Icon size={18} />
+                  <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-gold-deep">
+                    {tile.badge}
+                  </span>
+                </span>
+                <h3 className="card-title mt-3">{tile.title}</h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">{tile.text}</p>
                 <span className="mt-4 text-sm font-medium text-gold-deep">
                   Подробнее
                   <span className="ml-1 inline-block transition-transform group-hover:translate-x-0.5">→</span>
+                </span>
                 </span>
               </Link>
             );

@@ -29,6 +29,11 @@
   --color-gold-light: #d4b477;
   --color-on-gold: #14201c;
 
+  /* Legacy alias kept so pages that have not been migrated to the new section
+     structure still render in the current palette instead of losing colour. */
+  --color-glass: #173d35;
+  --color-glass-soft: #e5eee8;
+
   --color-success: #1f7a4d;
   --color-danger: #b42318;
   --color-warn: #8a5a12;

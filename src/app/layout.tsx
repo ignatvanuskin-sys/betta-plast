@@ -11,7 +11,7 @@ import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { analytics, company, contacts, site } from '@/lib/config';
 import { getClaimsMap } from '@/lib/domain/claims';
-import { navPages, publishedPages } from '@/lib/pages';
+import { navPages, primaryNavPages, publishedPages } from '@/lib/pages';
 
 /**
  * Typography with full Cyrillic coverage (§10). Self-hosted through next/font,
@@ -75,7 +75,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           Перейти к содержимому
         </a>
         <SiteHeader
-          nav={navPages(confirmed).map((page) => ({ href: page.path, label: page.navLabel }))}
+          primaryNav={primaryNavPages(confirmed).map((page) => ({ href: page.path, label: page.navLabel }))}
+          allNav={navPages(confirmed).map((page) => ({ href: page.path, label: page.navLabel }))}
           phone={contacts.phonePrimary}
           waHref={contacts.waHref}
         />

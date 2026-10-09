@@ -36,21 +36,27 @@ export function CookieConsent() {
     <div
       role="dialog"
       aria-label="Использование cookie"
-      className="fixed inset-x-3 bottom-20 z-50 rounded-xl border border-line bg-surface p-4 shadow-lg md:bottom-4 md:left-4 md:max-w-md"
+      className="fixed inset-x-3 bottom-3 z-50 rounded-xl border border-line bg-surface/97 p-3.5 shadow-[0_8px_30px_rgba(11,26,22,0.16)] backdrop-blur-sm lg:bottom-4 lg:left-4 lg:right-auto lg:max-w-sm"
     >
-      <p className="text-sm text-ink">
-        Мы используем обязательные cookie для работы сайта. Аналитику и рекламные пиксели подключаем только с вашего
-        согласия. Подробнее — в{' '}
-        <Link href="/politika" className="font-semibold text-glass underline">
-          политике конфиденциальности
+      <p className="text-[13px] leading-snug text-ink-soft">
+        Обязательные cookie — для работы сайта. Аналитику подключаем только с вашего согласия.{' '}
+        <Link href="/politika" className="font-medium text-primary underline">
+          Подробнее
         </Link>
-        .
       </p>
-      <div className="mt-3 flex flex-wrap gap-2">
-        <button type="button" onClick={() => decide('accepted')} className="btn btn-cta flex-1 py-2 text-sm">
-          Разрешить аналитику
+      <div className="mt-2.5 flex gap-2">
+        <button
+          type="button"
+          onClick={() => decide('accepted')}
+          className="min-h-9 flex-1 rounded-full bg-primary px-3 text-[13px] font-medium text-primary-fg"
+        >
+          Разрешить
         </button>
-        <button type="button" onClick={() => decide('declined')} className="btn btn-outline flex-1 py-2 text-sm">
+        <button
+          type="button"
+          onClick={() => decide('declined')}
+          className="min-h-9 flex-1 rounded-full border border-primary/25 px-3 text-[13px] font-medium text-primary"
+        >
           Только обязательные
         </button>
       </div>

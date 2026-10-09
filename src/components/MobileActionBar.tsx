@@ -16,6 +16,17 @@ import { trackEventClient } from '@/lib/client/analytics';
  */
 export function MobileActionBar({ waHref }: { waHref: string }) {
   const [hidden, setHidden] = useState(false);
+  /* The bar stays out of the way of the hero and appears once the visitor has
+     scrolled past it — same behaviour as the reference, and it stops the bar
+     from sitting on top of the first screen's content. */
+  const [scrolledPast, setScrolledPast] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolledPast(window.scrollY > window.innerHeight * 0.72);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     const isField = (target: EventTarget | null) => {
@@ -37,7 +48,7 @@ export function MobileActionBar({ waHref }: { waHref: string }) {
     };
   }, []);
 
-  if (hidden) return null;
+  if (hidden || !scrolledPast) return null;
 
   return (
     <div
