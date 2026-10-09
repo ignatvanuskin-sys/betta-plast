@@ -14,6 +14,9 @@ storage/
 .env.local
 .env.*.local
 
+# Design-reference captures kept locally for visual comparison (large PNGs)
+reference-*.png
+
 # Tooling
 *.tsbuildinfo
 next-env.d.ts

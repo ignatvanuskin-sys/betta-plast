@@ -17,6 +17,7 @@ const ALLOWED_EVENTS = new Set([
   'repair_request',
   'whatsapp_click',
   'call_click',
+  'email_click',
   'map_click',
   'gallery_open',
 ]);

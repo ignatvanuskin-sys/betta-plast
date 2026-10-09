@@ -2,14 +2,16 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 import { GalleryGrid } from '@/components/Gallery';
-import { LeadForm } from '@/components/LeadForm';
 import {
+  AudienceCards,
   BalconyHighlight,
   ContactBlock,
   FaqBlock,
   FaqSchema,
   Hero,
+  HeroTrust,
   LocalBusinessSchema,
+  SectionHeading,
   ServiceTiles,
   Steps,
   TrustRow,
@@ -18,6 +20,7 @@ import {
 import { FAQ_ITEMS } from '@/lib/content/faq';
 import { getGallery, REVIEW_THEMES } from '@/lib/domain/content';
 import { getRating, ratingLine } from '@/lib/domain/settings';
+import { contacts } from '@/lib/config';
 import { PAGES } from '@/lib/pages';
 
 export const metadata: Metadata = {
@@ -31,43 +34,84 @@ export const dynamic = 'force-dynamic';
 const SERVICES = [
   {
     href: '/okna',
-    title: 'Пластиковые окна',
-    text: 'Для квартир и домов: замер, изготовление, монтаж.',
+    title: 'Окна по размеру',
+    text: 'Пластиковые окна для квартир и частных домов: замер, изготовление, монтаж, откосы.',
     icon: 'window' as const,
   },
   {
     href: '/balkony',
     title: 'Балконы и лоджии',
-    text: 'Остекление, утепление, отделка, откосы, шкаф.',
+    text: 'Остекление, утепление, обшивка, откосы и встроенный шкаф — под ключ.',
     icon: 'balcony' as const,
   },
   {
     href: '/peregorodki',
-    title: 'Перегородки',
-    text: 'Для бутиков, магазинов и офисов. Эскиз по вашему размеру.',
+    title: 'Перегородки и витрины',
+    text: 'Для бутиков, магазинов и офисов. Эскиз по вашему размеру и монтаж.',
     icon: 'partition' as const,
-  },
-  {
-    href: '/remont-okon',
-    title: 'Ремонт окон',
-    text: 'Не закрывается, дует, сломана ручка — починим.',
-    icon: 'repair' as const,
   },
 ];
 
-const STEPS = [
-  { title: 'Заявка', text: 'Форма на сайте, звонок или WhatsApp. Данные сразу у менеджера.' },
-  { title: 'Замер и консультация', text: 'Приезжаем на объект, замеряем и обсуждаем варианты.' },
-  { title: 'Расчёт и договор', text: 'Называем стоимость после замера, фиксируем условия.' },
-  { title: 'Изготовление', text: 'Конструкции делаются по вашим размерам.' },
-  { title: 'Монтаж и акт', text: 'Доставка, установка, уборка и подписание акта.' },
+const AUDIENCE = [
+  {
+    eyebrow: 'Жилые помещения',
+    title: 'Для квартиры',
+    text: 'Замена окон, отдельные створки, балкон, регулировка и ремонт.',
+    href: '/okna',
+    cta: 'Рассчитать окна',
+  },
+  {
+    eyebrow: 'Индивидуальный проект',
+    title: 'Для дома',
+    text: 'Остекление и конструкции по вашим размерам — от одной створки до всего дома.',
+    href: '/raschet',
+    cta: 'Обсудить дом',
+  },
+  {
+    eyebrow: 'Коммерческие объекты',
+    title: 'Для бизнеса',
+    text: 'Перегородки, витрины и окна для магазинов, бутиков и офисов. Работа по договору.',
+    href: '/dlya-organizacij',
+    cta: 'Запросить расчёт',
+  },
+  {
+    eyebrow: 'Без лишних вопросов',
+    title: 'Нужен совет',
+    text: 'Не знаете, что выбрать? Опишите задачу — подскажем направление.',
+    href: '/faq',
+    cta: 'Задать вопрос',
+  },
+];
+
+const PRICE_FACTORS = [
+  'Размер проёма, количество створок и тип открывания',
+  'Стеклопакет: число камер и энергосбережение',
+  'Фурнитура, откосы, подоконник и отливы',
+  'Объём монтажа, этаж и доставка',
+];
+
+const MATERIALS = [
+  {
+    title: 'Для квартиры и дома',
+    text: 'Тёплые конструкции для жилых помещений: держат тепло и уличный шум, подходят для стандартных и нестандартных проёмов.',
+  },
+  {
+    title: 'Для коммерческих объектов',
+    text: 'Тонкие прочные рамы и большие площади остекления: витрины, входные группы, перегородки, панорамные конструкции.',
+  },
+];
+
+const REQUEST_STEPS = [
+  { title: 'Опишите задачу', text: 'Выберите, что нужно: окна, балкон, перегородка или ремонт.' },
+  { title: 'Добавьте контекст', text: 'Укажите адрес, примерные размеры и, если удобно, приложите фото объекта.' },
+  { title: 'Получите связь', text: 'Менеджер уточнит параметры и согласует следующий шаг — замер или расчёт.' },
 ];
 
 const WHY_US = [
-  { title: 'Производственная компания', text: 'В 2ГИС тип предприятия указан как «Производство».' },
-  { title: 'Стоимость после замера', text: 'Считаем по фактическим размерам, без «сюрпризов» в договоре.' },
-  { title: 'Рейтинг в 2ГИС', text: 'Клиенты ставят высокие оценки и отмечают аккуратный монтаж.' },
-  { title: 'Доставка', text: 'Привозим конструкции на объект.' },
+  { title: 'Замер до расчёта', text: 'Цифры считаем по фактическому проёму, а не по прикидкам.' },
+  { title: 'Рейтинг в 2ГИС', text: 'Клиенты отмечают сроки, аккуратный монтаж и консультации.' },
+  { title: 'Ремонт и регулировка', text: 'Если окно уже стоит — отремонтируем и отрегулируем.' },
+  { title: 'Организациям', text: 'Окна и перегородки, оплата через банк, оформление — у менеджера.' },
 ];
 
 export default async function HomePage() {
@@ -80,12 +124,42 @@ export default async function HomePage() {
       <FaqSchema items={FAQ_ITEMS.slice(0, 6)} />
 
       <Hero
-        h1="Пластиковые окна и балконы под ключ в Караганде"
-        subtitle="Производство, замер, установка. Окна, остекление балконов, перегородки, ремонт."
+        h1="Свет, тепло и тишина — в вашем доме."
+        subtitle="Окна, остекление балконов и перегородки в Караганде. Подберём решение под ваш объект, организуем замер и подготовим расчёт."
+        primary={{ href: '/raschet', label: 'Запросить расчёт' }}
+        trust={<HeroTrust rating={rating} />}
       />
       <TrustRow rating={rating} />
 
-      <ServiceTiles tiles={SERVICES} />
+      <ServiceTiles
+        tiles={SERVICES}
+        eyebrow="Направления"
+        title="Три направления, с которых чаще всего начинают"
+        lead="Опишите объект — подскажем решение и посчитаем после замера."
+      />
+
+      <AudienceCards cards={AUDIENCE} />
+
+      {gallery.length > 0 ? (
+        <section className="section-sm bg-sand" id="works">
+          <div className="container-page">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <SectionHeading
+                eyebrow="Наши работы"
+                title="Реальные объекты, а не стоковые картинки"
+                size="sm"
+                lead="Фотографии наших объектов: окна, балконы, перегородки. Нажмите на снимок, чтобы рассмотреть детали."
+              />
+              <Link href="/raboty" className="btn btn-outline shrink-0">
+                Все работы
+              </Link>
+            </div>
+            <div className="mt-10">
+              <GalleryGrid items={gallery} />
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <BalconyHighlight
         items={[
@@ -98,70 +172,158 @@ export default async function HomePage() {
         ]}
       />
 
-      <Steps steps={STEPS} />
-
-      <WhyUs items={WHY_US} />
-
-      {gallery.length > 0 ? (
-        <section className="section">
-          <div className="container-page">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <h2 className="text-2xl font-bold md:text-3xl">Наши работы</h2>
-              <Link href="/raboty" className="font-semibold text-glass underline">
-                Все работы
+      {/* Reference places its live calculator here. Betta Plast has no confirmed
+          price list yet, so this block collects the configuration instead of
+          showing a number (PRICE_DISPLAY=off). */}
+      <section className="section on-dark bg-dark" id="calculator">
+        <div className="container-page grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+          <div>
+            <SectionHeading
+              eyebrow="Предварительный расчёт"
+              title="Соберите конфигурацию за минуту"
+              onDark
+              lead="Выберите тип конструкции и параметры — менеджер получит вашу конфигурацию вместе с заявкой и подготовит расчёт по реальным размерам и монтажу."
+            />
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/raschet" className="btn btn-gold btn-sheen">
+                Пройти мастер расчёта
               </Link>
-            </div>
-            <div className="mt-6">
-              <GalleryGrid items={gallery} />
+              <a
+                href={contacts.waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline"
+              >
+                Расчёт в WhatsApp
+              </a>
             </div>
           </div>
-        </section>
-      ) : null}
+          <div className="rounded-[0.9rem] border border-white/15 bg-white/5 p-6 lg:p-8">
+            <p className="text-sm font-medium text-primary-fg">Что уточнит мастер</p>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              {['Тип конструкции', 'Размеры проёма', 'Тип открывания', 'Дополнительно: откосы, сетки, шкаф'].map(
+                (item) => (
+                  <li key={item} className="rounded-xl border border-white/15 px-4 py-3 text-sm text-primary-fg/85">
+                    {item}
+                  </li>
+                ),
+              )}
+            </ul>
+            <p className="mt-5 text-[13px] leading-relaxed text-primary-fg/60">
+              Стоимость называем после замера: она зависит от размеров, стеклопакета, фурнитуры и объёма монтажа.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <section className="section bg-surface-2">
+      <section className="section bg-warm" id="price">
+        <div className="container-page grid gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <SectionHeading
+              eyebrow="Про цену честно"
+              title="Мы не пишем «окно от 30 000 ₸». И вот почему."
+              lead="Одинаковые на вид окна отличаются в цене в разы — и почти всегда разница не в самом окне, а в комплектации и монтаже. Поэтому вместо усреднённой цифры мы считаем по вашим параметрам и объясняем, из чего складывается сумма."
+            />
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/raschet" className="btn btn-green btn-sheen">
+                Рассчитать стоимость
+              </Link>
+              <a href={contacts.waHref} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
+                Расчёт в WhatsApp
+              </a>
+            </div>
+          </div>
+          <div>
+            <ul className="grid gap-3">
+              {PRICE_FACTORS.map((factor) => (
+                <li key={factor} className="rounded-xl border border-line bg-cream px-5 py-4 text-sm leading-relaxed text-ink-soft">
+                  {factor}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="section bg-cream">
         <div className="container-page">
-          <h2 className="text-2xl font-bold md:text-3xl">Отзывы</h2>
-          <p className="mt-3 max-w-2xl text-ink-soft">
-            {ratingLine(rating)}.{' '}
-            <a
-              href={rating.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-glass underline"
-            >
-              Все отзывы в 2ГИС
-            </a>
-          </p>
-          <h3 className="mt-8 font-semibold">Что отмечают клиенты</h3>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {REVIEW_THEMES.map((theme) => (
-              <div key={theme.title} className="card">
-                <p className="font-semibold">{theme.title}</p>
-                <p className="mt-1 text-sm text-ink-soft">{theme.text}</p>
+          <SectionHeading
+            eyebrow="Что выбрать"
+            title="Что подойдёт именно вашему объекту"
+            lead="Не уверены в варианте? Опишите объект — подскажем и объясним разницу на вашем примере, без навязывания более дорогого решения."
+          />
+          <div className="mt-10 grid gap-4 md:grid-cols-2">
+            {MATERIALS.map((item, index) => (
+              <div key={item.title} className="card" data-reveal data-reveal-delay={index * 70}>
+                <h3 className="display-3">{item.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink-soft">{item.text}</p>
               </div>
             ))}
           </div>
-          <p className="hint mt-4">
-            Это обобщение тем из отзывов, а не цитаты. Рейтинг и оценки — данные 2ГИС, ссылка на источник выше.
+        </div>
+      </section>
+
+      <Steps steps={REQUEST_STEPS} />
+      <WhyUs items={WHY_US} />
+
+      <section className="section-sm bg-deeper" id="reviews">
+        <div className="container-page">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <SectionHeading
+              eyebrow="Отзывы"
+              title="Что говорят клиенты"
+              size="sm"
+              lead={`
+                ${ratingLine(rating)}. Это данные карточки 2ГИС на ${rating.checkedAt} — мы не придумываем отзывы и не
+                показываем «счётчики довольных клиентов».
+              `}
+            />
+            <a
+              href={contacts.gisReviewsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-outline shrink-0"
+            >
+              Читать в 2ГИС
+            </a>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {REVIEW_THEMES.map((theme, index) => (
+              <div key={theme.title} className="card" data-reveal data-reveal-delay={index * 70}>
+                <p className="font-semibold leading-snug text-primary">{theme.title}</p>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{theme.text}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-6 max-w-2xl text-[13px] leading-relaxed text-muted-fg">
+            Это обобщение тем из отзывов, а не цитаты: дословные отзывы появятся на сайте только с согласия авторов и
+            после подтверждения владельцем. Пока читайте их напрямую в 2ГИС.
           </p>
         </div>
       </section>
 
-      <section className="section bg-surface" id="zayavka">
-        <div className="container-page grid gap-8 lg:grid-cols-2">
-          <div>
-            <h2 className="text-2xl font-bold md:text-3xl">Быстрая заявка</h2>
-            <p className="mt-3 text-ink-soft">
-              Оставьте имя и телефон — менеджер свяжется в рабочее время. Хотите быстрее — напишите в WhatsApp.
+      <section className="section bg-sand">
+        <div className="container-page">
+          <div className="on-dark rounded-[0.9rem] bg-dark px-6 py-10 text-center lg:px-16 lg:py-14">
+            <span className="eyebrow eyebrow-on-dark">Последний шаг</span>
+            <h2 className="display-2 mt-3 text-primary-fg">Рассчитаем стоимость вашего проекта</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-primary-fg/75">
+              Опишите объект — подберём конструкцию, назовём сроки и подготовим расчёт. Консультация ни к чему не
+              обязывает.
             </p>
-            <ul className="mt-6 space-y-3 text-sm text-ink-soft">
-              <li>Стоимость считаем после замера — по вашим размерам.</li>
-              <li>Работаем и с квартирами, и с организациями.</li>
-              <li>Ремонт и регулировку можно заказать отдельно.</li>
-            </ul>
-          </div>
-          <div className="card">
-            <LeadForm formKind="quick" showKindSelect showDistrict showComment submitLabel="Получить расчёт" />
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link href="/raschet" className="btn btn-gold btn-sheen">
+                Получить расчёт
+              </Link>
+              <a href={contacts.waHref} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
+                WhatsApp
+              </a>
+              <a href={contacts.telHref} className="btn btn-outline">
+                Позвонить
+              </a>
+            </div>
           </div>
         </div>
       </section>

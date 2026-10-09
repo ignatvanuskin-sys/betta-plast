@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { Manrope } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
 
 import './globals.css';
 import { Analytics } from '@/components/Analytics';
 import { CookieConsent } from '@/components/CookieConsent';
 import { MobileActionBar } from '@/components/MobileActionBar';
+import { RevealObserver } from '@/components/RevealObserver';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { analytics, company, contacts, site } from '@/lib/config';
@@ -18,11 +19,11 @@ import { navPages, publishedPages } from '@/lib/pages';
  * layout shift from a late-swapping font.
  * Kazakh glyphs (ә, і, ң, ғ, ү, ұ, қ, ө, һ) are included in the cyrillic subset.
  */
-const manrope = Manrope({
+const inter = Inter({
   subsets: ['latin', 'cyrillic', 'cyrillic-ext'],
   weight: ['400', '500', '600', '700'],
   display: 'swap',
-  variable: '--font-manrope',
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -66,7 +67,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
   return (
     <html lang="ru">
-      <body className={`${manrope.variable} min-h-screen antialiased`}>
+      <body className={`${inter.variable} min-h-screen antialiased`}>
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded focus:bg-surface focus:px-4 focus:py-2"
@@ -78,11 +79,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           phone={contacts.phonePrimary}
           waHref={contacts.waHref}
         />
-        <main id="main" className="pb-20 md:pb-0">
+        {/* The header is fixed at 69px, so the content starts below it. */}
+        <main id="main" className="pt-[69px] pb-24 lg:pb-0">
           {children}
         </main>
         <SiteFooter pages={publishedPages(confirmed).map((page) => ({ href: page.path, label: page.navLabel }))} />
-        <MobileActionBar phone={contacts.phonePrimary} waHref={contacts.waHref} />
+        <MobileActionBar waHref={contacts.waHref} />
+        <RevealObserver />
         <CookieConsent />
         <Analytics
           ids={{

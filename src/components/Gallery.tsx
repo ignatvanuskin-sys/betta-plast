@@ -59,7 +59,9 @@ export function GalleryGrid({ items }: { items: GalleryEntry[] }) {
         ))}
       </div>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {/* CSS masonry, matching the reference gallery: every photo keeps its own
+          aspect ratio instead of being cropped into a uniform grid. */}
+      <div className="masonry mt-6">
         {filtered.map((item) => (
           <button
             key={item.id}
@@ -68,18 +70,19 @@ export function GalleryGrid({ items }: { items: GalleryEntry[] }) {
               setOpenId(item.id);
               trackEventClient('gallery_open', { category: item.category });
             }}
-            className="group overflow-hidden rounded-xl border border-line bg-surface text-left"
+            className="media-round group block w-full border border-line bg-cream text-left"
           >
-            <span className="relative block aspect-[4/3] bg-surface-2">
-              <Image
-                src={item.url}
-                alt={item.caption || 'Работа Бетта Пласт'}
-                fill
-                sizes="(max-width: 640px) 100vw, 33vw"
-                className="object-cover transition group-hover:scale-[1.02]"
-              />
-            </span>
-            {item.caption ? <span className="block p-3 text-sm text-ink-soft">{item.caption}</span> : null}
+            <Image
+              src={item.url}
+              alt={item.caption || 'Работа Бетта Пласт'}
+              width={item.width || 1200}
+              height={item.height || 900}
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="h-auto w-full object-cover transition-opacity group-hover:opacity-90"
+            />
+            {item.caption ? (
+              <span className="block px-4 py-3 text-sm leading-relaxed text-ink-soft">{item.caption}</span>
+            ) : null}
           </button>
         ))}
       </div>
