@@ -125,26 +125,28 @@ export async function SiteFooter({ pages, legalEntity }: { pages: FooterLink[]; 
           </p>
           {legalEntity ? <p>{legalEntity}</p> : null}
         </div>
-        {/* Attribution for licensed illustration photography. */}
-        <div className="container-page pb-6 text-xs text-primary-fg/45">
-          <p>
-            {PHOTO_CREDITS.map((photo, index) => (
-              <span key={photo.file}>
-                {index > 0 ? ' · ' : ''}
-                Фото: {photo.creator},{' '}
-                <a
-                  href={photo.source}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  className="underline transition-colors hover:text-gold-light"
-                >
-                  {photo.licence}
-                </a>
-              </span>
-            ))}
-            {PHOTO_CREDITS.length > 0 ? ' — иллюстрации, а не фотографии наших работ.' : null}
-          </p>
-        </div>
+        {/* Attribution for licensed illustration photography (hidden while none is used). */}
+        {PHOTO_CREDITS.length > 0 ? (
+          <div className="container-page pb-6 text-xs text-primary-fg/45">
+            <p>
+              {PHOTO_CREDITS.map((photo, index) => (
+                <span key={photo.file}>
+                  {index > 0 ? ' · ' : ''}
+                  Фото: {photo.creator},{' '}
+                  <a
+                    href={photo.source}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="underline transition-colors hover:text-gold-light"
+                  >
+                    {photo.licence}
+                  </a>
+                </span>
+              ))}{' '}
+              — иллюстрации, а не фотографии наших работ.
+            </p>
+          </div>
+        ) : null}
       </div>
     </footer>
   );

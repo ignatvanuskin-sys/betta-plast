@@ -21,19 +21,23 @@ export type LicensedPhoto = {
 };
 
 /**
- * Hero background. Free CC sources produced mostly unusable snapshots for this
- * project (see docs/AUDIT.md); this is the one image that survived review:
- * a modern glass facade, no third-party branding, no people.
+ * Hero background photo — deliberately NOT set.
+ *
+ * A licensed glass-facade photo was added, rendered and measured, then removed
+ * again. It made the hero worse, for four reasons:
+ *   - the free source served a 960x636 preview (not the 4164px the metadata
+ *     promised), so it was upscaled ~1.5x on a 1425px-wide render and looked soft;
+ *   - with enough dark overlay to keep the headline readable, the photo was
+ *     invisible on desktop — the hero looked like the plain backdrop it replaced;
+ *   - on a 390px viewport, `object-fit: cover` cropped ~66% of its width, leaving
+ *     anonymous diagonal lines with no readable "glazing" meaning;
+ *   - as a generic architecture shot it read as stock, i.e. more generic than the
+ *     branded drawn elevation used instead.
+ *
+ * Set this to a licensed high-resolution photo (>= 2400px wide, landscape) to
+ * switch the hero over; the drawn facade is used whenever it is null.
  */
-export const HERO_PHOTO: LicensedPhoto = {
-  file: '/photos/hero.jpg',
-  alt: 'Фасад современного здания со стеклянным остеклением',
-  title: 'Building windows',
-  creator: 'Scott Webb',
-  licence: 'CC0 1.0',
-  licenceUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
-  source: 'https://stocksnap.io/photo/building-windows-DBVYE3XXNS',
-};
+export const HERO_PHOTO: LicensedPhoto | null = null;
 
 /** Rendered in the footer so attribution stays visible wherever a photo is used. */
-export const PHOTO_CREDITS: LicensedPhoto[] = [HERO_PHOTO];
+export const PHOTO_CREDITS: LicensedPhoto[] = HERO_PHOTO ? [HERO_PHOTO] : [];
